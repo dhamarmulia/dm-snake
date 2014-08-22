@@ -146,44 +146,43 @@ class Food(object):
         
         
 
-curses.initscr()
-window = curses.newwin(HEIGHT, WIDTH, 0, 0) 
-window.timeout(TIMEOUT)
-window.keypad(1)
-curses.noecho()
-curses.curs_set(0)
-window.border(0)
+if __name__ == '__main__':
+	curses.initscr()
+	window = curses.newwin(HEIGHT, WIDTH, 0, 0) 
+	window.timeout(TIMEOUT)
+	window.keypad(1)
+	curses.noecho()
+	curses.curs_set(0)
+	window.border(0)
 
+	snake = Snake(SNAKE_X, SNAKE_Y, window)
+	food = Food(window, 'A')
 
-snake = Snake(SNAKE_X, SNAKE_Y, window)
-food = Food(window, 'A')
+	while True:
+		window.clear()
+		window.border(0)
+		snake.render()
+		food.render()
+		window.addstr(0, 5, snake.score)
+		event = window.getch()
+		
+		if event == 27:
+			break
+			
+		if event in [ KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT ]:
+			snake.change_direction(event)
+		
+		if snake.kepala.x == food.x and snake.kepala.y == food.y:
+			snake.eat_food(food)
+			
+		if event == 32:
+			key = -1
+			while key != 32:
+				key = window.getch()
+		
+		snake.update()
+		if snake.nabrak:
+			break
+			
+	curses.endwin()
 
-while True:
-    window.clear()
-    window.border(0)
-    snake.render()
-    food.render()
-    window.addstr(0, 5, snake.score)
-    event = window.getch()
-    
-    if event == 27:
-        break
-        
-    if event in [ KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT ]:
-        snake.change_direction(event)
-    
-    if snake.kepala.x == food.x and snake.kepala.y == food.y:
-        snake.eat_food(food)
-        
-    if event == 32:
-        key = -1
-        while key != 32:
-            key = window.getch()
-    
-    snake.update()
-    if snake.nabrak:
-        break
-        
-    
-    
-curses.endwin()
